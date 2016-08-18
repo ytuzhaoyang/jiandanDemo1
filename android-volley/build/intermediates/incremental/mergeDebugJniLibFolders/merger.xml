@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/Users/zhaoyang/Documents/workspace/jiandanDemo1/android-volley/src/main/jniLibs"/></dataSet><dataSet config="debug"><source path="/Users/zhaoyang/Documents/workspace/jiandanDemo1/android-volley/src/debug/jniLibs"/></dataSet></merger>
