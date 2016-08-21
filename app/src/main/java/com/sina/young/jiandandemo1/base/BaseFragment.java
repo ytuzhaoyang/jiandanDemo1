@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 
 import com.sina.young.jiandandemo1.BuildConfig;
 
-import utils.http.HttpManager;
 import utils.logger.LogLevel;
 import utils.logger.Logger;
 
@@ -30,6 +29,6 @@ public class BaseFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         //取消网络
-        HttpManager.getInstance().cancelAll(this);
+//        HttpManager.getInstance().cancelAll(this);
     }
 }

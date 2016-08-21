@@ -47,7 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onDestroy();
 
         mManager.finishActivity(this);
-        HttpManager.getInstance().cancelAll(this);
+       // HttpManager.getInstance().cancelAll(this);
     }
 
     protected abstract void initView();
