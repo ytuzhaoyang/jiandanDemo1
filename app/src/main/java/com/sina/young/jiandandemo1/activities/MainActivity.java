@@ -94,7 +94,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mActionBarDrawerToggle.syncState();
         mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
 
-        mCurrentFragment = new FreshNewsFragment();
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mCurrentFragment = FreshNewsFragment.newInstance(mPreferences.getBoolean(SettingFragment.ENABLE_SISTER, true));
         replaceFragment(R.id.frame_container, mCurrentFragment);
     }
 
@@ -114,7 +115,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             }
         };
 
-        //注册检测网络链接状态的光播
+        //注册检测网络链接状态的广播
         registerReceiver(mNetStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
