@@ -2,7 +2,6 @@ package com.sina.young.jiandandemo1.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import com.android.volley.VolleyError;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.sina.young.jiandandemo1.R;
 import com.sina.young.jiandandemo1.bean.NewsBean;
-import com.sina.young.jiandandemo1.bean.Test;
+import com.sina.young.jiandandemo1.bean.RefreshNewsBean;
 
 import java.util.List;
 
@@ -37,9 +36,9 @@ public class RefreshNewsAdapter extends RecyclerView.Adapter<RefreshNewsAdapter.
 
     private DisplayImageOptions mOptions;
 
-    public RefreshNewsAdapter(Context context) {
+    public RefreshNewsAdapter(Context context, List<NewsBean> mDatas) {
         mContext = context;
-
+        this.mDatas = mDatas;
         mOptions = ImageLoadProxy.getOptions4PictureList(R.mipmap.ic_loading_small);
     }
 
@@ -94,11 +93,11 @@ public class RefreshNewsAdapter extends RecyclerView.Adapter<RefreshNewsAdapter.
      */
     private void loadDataByNetworkType() {
         if (NetWorkUtils.isNetWorkConnected(mContext)) {
-            JavaObjRequest objRequest = new JavaObjRequest<Test>(Request.Method.GET, UrlManager.URL_FRESH_NEWS + page, "", new Response.Listener<Test>() {
+            JavaObjRequest objRequest = new JavaObjRequest<RefreshNewsBean>(Request.Method.GET, UrlManager.URL_FRESH_NEWS + page, "", new Response.Listener<RefreshNewsBean>() {
                 @Override
-                public void onResponse(Test response) {
+                public void onResponse(RefreshNewsBean response) {
                     if (response != null){
-                        Log.d("zhaoyang", "onResponse: ==="+response.getStatus());
+                       mDatas.addAll(response.getPosts());
                     }
                 }
             }, new Response.ErrorListener() {
@@ -106,7 +105,7 @@ public class RefreshNewsAdapter extends RecyclerView.Adapter<RefreshNewsAdapter.
                 public void onErrorResponse(VolleyError error) {
 
                 }
-            }, Test.class, false);
+            }, RefreshNewsBean.class, false);
             objRequest.doRequest();
         }
     }
