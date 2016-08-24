@@ -11,5 +11,7 @@
 
     <color name="comment_bg">#FFFFFF</color>
     <color name="actionbar_title">#FFFFFF</color>
+    <color name="item_normal_bg">#ffffff</color>
+    <color name="navigation_check_color">#158bc3</color>
 
 </resources>
