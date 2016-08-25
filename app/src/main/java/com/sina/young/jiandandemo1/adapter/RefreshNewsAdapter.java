@@ -8,22 +8,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.sina.young.jiandandemo1.R;
 import com.sina.young.jiandandemo1.bean.NewsBean;
-import com.sina.young.jiandandemo1.bean.RefreshNewsBean;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import utils.ImageLoadProxy;
-import utils.NetWorkUtils;
-import utils.http.JavaObjRequest;
-import utils.http.UrlManager;
 
 /**
  * Created by zhaoyang on 16/8/22.
@@ -44,7 +37,7 @@ public class RefreshNewsAdapter extends RecyclerView.Adapter<RefreshNewsAdapter.
 
     @Override
     public NewsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_news_layout, parent);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_news_layout, parent, false);
         return new NewsHolder(view);
     }
 
@@ -79,34 +72,7 @@ public class RefreshNewsAdapter extends RecyclerView.Adapter<RefreshNewsAdapter.
 
         public NewsHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
-        }
-    }
-
-    public void loadFirst() {
-        page = 1;
-        loadDataByNetworkType();
-    }
-
-    /**
-     * 根据网络类型请求数据
-     */
-    private void loadDataByNetworkType() {
-        if (NetWorkUtils.isNetWorkConnected(mContext)) {
-            JavaObjRequest objRequest = new JavaObjRequest<RefreshNewsBean>(Request.Method.GET, UrlManager.URL_FRESH_NEWS + page, "", new Response.Listener<RefreshNewsBean>() {
-                @Override
-                public void onResponse(RefreshNewsBean response) {
-                    if (response != null){
-                       mDatas.addAll(response.getPosts());
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            }, RefreshNewsBean.class, false);
-            objRequest.doRequest();
+            ButterKnife.bind(this, itemView);
         }
     }
 }

@@ -1,10 +1,12 @@
 package com.sina.young.jiandandemo1.fragments;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +19,7 @@ import com.sina.young.jiandandemo1.adapter.RefreshNewsAdapter;
 import com.sina.young.jiandandemo1.base.BaseFragment;
 import com.sina.young.jiandandemo1.bean.NewsBean;
 import com.sina.young.jiandandemo1.bean.RefreshNewsBean;
-import com.sina.young.jiandandemo1.view.AutoLoadRecyclerView;
-import com.victor.loading.rotate.RotateLoading;
+import com.sina.young.jiandandemo1.view.LoadFrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +38,9 @@ public class FreshNewsFragment extends BaseFragment {
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout mRefreshLayout;
     @BindView(R.id.recycler_view)
-    AutoLoadRecyclerView mRecyclerView;
-    @BindView(R.id.loading)
-    RotateLoading mLoading;
+    RecyclerView mRecyclerView;
+    @BindView(R.id.loadLayout)
+    LoadFrameLayout mLoadFrameLayout;
 
     private RefreshNewsAdapter mNewsAdapter;
     private LinearLayoutManager mLayoutManager;
@@ -67,7 +68,7 @@ public class FreshNewsFragment extends BaseFragment {
         }
 
         mNewsBeans = new ArrayList<>();
-        getData();
+
     }
 
     @Override
@@ -87,28 +88,53 @@ public class FreshNewsFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setHasFixedSize(false);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        if (mNewsAdapter != null)
-            mRecyclerView.setAdapter(mNewsAdapter);
-        mLoading.start();
+
+        initView();
+
+        loadData();
     }
 
-    public void getData() {
+    private void initView() {
+        mLayoutManager = new LinearLayoutManager(getActivity());
+
+        mRefreshLayout.setColorSchemeColors(Color.parseColor("ff00ddff"),
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+            }
+        });
+
+        mLoadFrameLayout.showLoadingView();
+
+        mRecyclerView.setHasFixedSize(false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mNewsAdapter = new RefreshNewsAdapter(getActivity(), mNewsBeans);
+        mRecyclerView.setAdapter(mNewsAdapter);
+    }
+
+    private void loadData() {
         if (NetWorkUtils.isNetWorkConnected(getActivity())) {
             JavaObjRequest objRequest = new JavaObjRequest<RefreshNewsBean>(Request.Method.GET, UrlManager.URL_FRESH_NEWS + page, "", new Response.Listener<RefreshNewsBean>() {
                 @Override
                 public void onResponse(RefreshNewsBean response) {
-                    if (response != null) {
+                    if (response != null){
                         mNewsBeans.addAll(response.getPosts());
-                        mNewsAdapter = new RefreshNewsAdapter(getActivity(), mNewsBeans);
+                        mNewsAdapter.notifyDataSetChanged();
+                        mLoadFrameLayout.showContentView();
+
+                    }else {
+                        mLoadFrameLayout.showEmptyView();
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
+                    mLoadFrameLayout.showErrorView();
                 }
             }, RefreshNewsBean.class, false);
             objRequest.doRequest();
